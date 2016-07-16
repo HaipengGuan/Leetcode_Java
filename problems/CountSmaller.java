@@ -27,7 +27,7 @@ public abstract class CountSmaller {
     public abstract List<Integer> countSmaller(int[] nums);
     
     public static void main(String[] args) {
-		CountSmaller cs = new MergeSortSolution();
+		CountSmaller cs = new MergeSortSolution2();
 		System.out.println(cs.countSmaller(new int[] {}));
 		System.out.println(cs.countSmaller(new int[] {1}));
 		System.out.println(cs.countSmaller(new int[] {1,1}));
@@ -143,7 +143,6 @@ class FenwickTreeSolution extends CountSmaller {
 	}
 }
 
-
 // --------------------------------------------------
 
 class MergeSortSolution extends CountSmaller {
@@ -199,3 +198,50 @@ class MergeSortSolution extends CountSmaller {
 		}
 	}
 }
+
+//--------------------------------------------------
+
+class MergeSortSolution2 extends CountSmaller {
+
+	public List<Integer> countSmaller(int[] nums) {
+		int n = nums.length;
+		int[] indexes = new int[n];
+		Integer[] count = new Integer[n];
+		if (n > 0) {
+			mergeSort(nums, indexes, 0, n-1, count);
+		}
+		return Arrays.asList(count);
+	}
+	
+	private void mergeSort(int[] nums, int[] indexes, int low, int high, Integer[] count) {
+		if (low >= high) {
+			count[high] = 0; 
+			indexes[high] = high;
+			return;
+		}
+		int mid = (low + high) / 2;
+		mergeSort(nums, indexes, low, mid, count);
+		mergeSort(nums, indexes, mid+1, high, count);
+		int[] tmpIndex = new int[high - low + 1];
+		int left = low, right = mid+1, ind = 0, moveCount = 0;
+		while (left <= mid || right <= high) {
+			if (left > mid) { // move right
+				tmpIndex[ind++] = indexes[right++];
+			} else if (right > high) { // move left
+				count[indexes[left]] += moveCount;
+				tmpIndex[ind++] = indexes[left++];
+			} else if (nums[indexes[right]] < nums[indexes[left]]) { // move right
+				moveCount++;
+				tmpIndex[ind++] = indexes[right++];	
+			} else { // move left
+				count[indexes[left]] += moveCount;
+				tmpIndex[ind++] = indexes[left++];
+			}
+		}
+		for (int i = 0; i < tmpIndex.length; i++) {
+			indexes[low+i] = tmpIndex[i];
+		}
+	}
+	
+}
+
