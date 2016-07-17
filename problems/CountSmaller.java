@@ -27,7 +27,7 @@ public abstract class CountSmaller {
     public abstract List<Integer> countSmaller(int[] nums);
     
     public static void main(String[] args) {
-		CountSmaller cs = new MergeSortSolution2();
+		CountSmaller cs = new MergeSortSolution3();
 		System.out.println(cs.countSmaller(new int[] {}));
 		System.out.println(cs.countSmaller(new int[] {1}));
 		System.out.println(cs.countSmaller(new int[] {1,1}));
@@ -168,24 +168,24 @@ class MergeSortSolution extends CountSmaller {
 		int mid = (low + high) / 2;
 		mergeSort(pairs, low, mid, count);
 		mergeSort(pairs, mid + 1, high, count);
-		Pair[] tmp = new Pair[high - low + 1];
+		Pair[] cache = new Pair[high - low + 1];
 		int ind = 0, left = low, right = mid + 1, moveCount = 0;
 		while (left <= mid || right <= high) {
 			if (left > mid) { // move right
-				tmp[ind++] = pairs[right++];
+				cache[ind++] = pairs[right++];
 			} else if (right > high) { // move left
 				count[pairs[left].ind] += moveCount;
-				tmp[ind++] = pairs[left++];
+				cache[ind++] = pairs[left++];
 			} else if (pairs[right].val < pairs[left].val) { // move right
 				moveCount++;
-				tmp[ind++] = pairs[right++];
+				cache[ind++] = pairs[right++];
 			} else { // move left
 				count[pairs[left].ind] += moveCount;
-				tmp[ind++] = pairs[left++];
+				cache[ind++] = pairs[left++];
 			}
 		}
-		for (int i = 0; i < tmp.length; i++) {
-			pairs[i + low] = tmp[i];
+		for (int i = 0; i < cache.length; i++) {
+			pairs[i + low] = cache[i];
 		}
 	}
 
@@ -222,26 +222,62 @@ class MergeSortSolution2 extends CountSmaller {
 		int mid = (low + high) / 2;
 		mergeSort(nums, indexes, low, mid, count);
 		mergeSort(nums, indexes, mid+1, high, count);
-		int[] tmpIndex = new int[high - low + 1];
+		int[] cache = new int[high - low + 1];
 		int left = low, right = mid+1, ind = 0, moveCount = 0;
 		while (left <= mid || right <= high) {
 			if (left > mid) { // move right
-				tmpIndex[ind++] = indexes[right++];
+				cache[ind++] = indexes[right++];
 			} else if (right > high) { // move left
 				count[indexes[left]] += moveCount;
-				tmpIndex[ind++] = indexes[left++];
+				cache[ind++] = indexes[left++];
 			} else if (nums[indexes[right]] < nums[indexes[left]]) { // move right
 				moveCount++;
-				tmpIndex[ind++] = indexes[right++];	
+				cache[ind++] = indexes[right++];	
 			} else { // move left
 				count[indexes[left]] += moveCount;
-				tmpIndex[ind++] = indexes[left++];
+				cache[ind++] = indexes[left++];
 			}
 		}
-		for (int i = 0; i < tmpIndex.length; i++) {
-			indexes[low+i] = tmpIndex[i];
+		for (int i = 0; i < cache.length; i++) {
+			indexes[low+i] = cache[i];
 		}
 	}
-	
+}
+
+//--------------------------------------------------
+
+class MergeSortSolution3 extends CountSmaller {
+
+	public List<Integer> countSmaller(int[] nums) {
+		int n = nums.length;
+		int[] indexes = new int[n];
+		Integer[] count = new Integer[n];
+		if (n > 0) {
+			mergeSort(nums, indexes, 0, n, count);
+		}
+		return Arrays.asList(count);
+	}
+
+	private void mergeSort(int[] nums, int[] indexes, int low, int high, Integer[] count) {
+		if (high - low <= 1) {
+			count[high-1] = 0;
+			indexes[high-1] = high-1;
+			return;
+		}
+		int mid = (low + high) / 2;
+		mergeSort(nums, indexes, low, mid, count);
+		mergeSort(nums, indexes, mid, high, count);
+		int left = low, right = mid, ind = 0, moveCount = 0;
+		int[] cache = new int[high - low];
+		while (left < mid) {
+			while (right < high && nums[indexes[right]] < nums[indexes[left]]) {
+				moveCount++;
+				cache[ind++] = indexes[right++];
+			}
+			count[indexes[left]] += moveCount;
+			cache[ind++] = indexes[left++];
+		}
+		System.arraycopy(cache, 0, indexes, low, right - low);
+	}
 }
 
