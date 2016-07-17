@@ -158,21 +158,21 @@ class CountRangeSumMergeSort extends CountRangeSum {
 		for (int i = 0; i < n; i++) {
 			sums[i+1] = sums[i] + nums[i];
 		}
-		return countAndMergeSort(sums, 0, n, lower, upper);
+		return countAndMergeSort(sums, 0, n+1, lower, upper);
 	}
 	
 	private int countAndMergeSort(long[] sums, int low, int high, int lower, int upper) {
-		if (low >= high) return 0;
+		if (high - low <= 1) return 0;
 		int mid = (low + high) / 2, curCount = 0;
 		curCount += countAndMergeSort(sums, low, mid, lower, upper);
-		curCount += countAndMergeSort(sums, mid+1, high, lower, upper);
-		long[] cache = new long[high - low + 1];
-		int left = low, right = mid+1, ind = 0;
-		int lowerInd = mid+1, upperInd = mid+1;
-		while (left <= mid) {
-			while (lowerInd <= high && sums[lowerInd] - sums[left] < lower) lowerInd++;
-			while (upperInd <= high && sums[upperInd] - sums[left] <= upper) upperInd++;
-			while (right <= high && sums[right] < sums[left]) cache[ind++] = sums[right++];
+		curCount += countAndMergeSort(sums, mid, high, lower, upper);
+		long[] cache = new long[high - low];
+		int left = low, right = mid, ind = 0;
+		int lowerInd = mid, upperInd = mid;
+		while (left < mid) {
+			while (lowerInd < high && sums[lowerInd] - sums[left] < lower) lowerInd++;
+			while (upperInd < high && sums[upperInd] - sums[left] <= upper) upperInd++;
+			while (right < high && sums[right] < sums[left]) cache[ind++] = sums[right++];
 			cache[ind++] = sums[left++];
 			curCount += upperInd - lowerInd;
 		}
