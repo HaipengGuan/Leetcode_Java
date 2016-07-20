@@ -49,11 +49,11 @@ public class RegularExpressionMatching {
     
     public void test(String s, String p) {
     	System.out.print(String.format("[%s <- %s] \t", s, p));
-    	System.out.println(isMatch(s, p));
+    	System.out.println(isMatch(s, p) == s.matches(p));
 	}
 
 	public static void main(String[] args) {
-		RegularExpressionMatching matching = new RegularExpressionMatching();	
+		RegularExpressionMatching matching = new ImprovedDP();	
 		matching.test("aa", "aa");		// true
 		matching.test("aaa", "aa");		// false	
 		matching.test("aa", "aaa");		// false
@@ -92,5 +92,36 @@ class TwoPointerSolution extends RegularExpressionMatching {
 			}
 			return isMatch(s, i, n, p, j+2, m);
 		}
+	}
+}
+
+class ImprovedDP extends RegularExpressionMatching {
+	@Override
+	public boolean isMatch(String s, String p) {
+    	int n = s.length(), m = p.length();
+		boolean[] dp = new boolean[m+1];
+		dp[0] = true;
+		for (int j = 0; j < m; j++) {
+			dp[j+1] = (p.charAt(j) == '*' && dp[j-1]); 
+		}
+		char s1, p1, p0;
+		boolean pre, cur;
+		for (int i = 0; i < n; i++) {
+			pre = dp[0];
+			dp[0] = false;
+			s1 = s.charAt(i);
+			for (int j = 0; j < m; j++) {
+				cur = dp[j+1];
+				p1 = p.charAt(j);
+				if (p1 == '*') {
+					p0 = p.charAt(j-1);
+					dp[j+1] = dp[j-1] || ((p0 == '.' || p0 == s1) && dp[j+1]);
+				} else {
+					dp[j+1] = pre && (p1 == '.' || p1 == s1);
+				}
+				pre = cur;
+			}
+		}
+		return dp[m];
 	}
 }
