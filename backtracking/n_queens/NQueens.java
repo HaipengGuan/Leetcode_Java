@@ -1,4 +1,4 @@
-package backtracking;
+package backtracking.n_queens;
 
 import java.util.ArrayList;
 import java.util.Arrays;
