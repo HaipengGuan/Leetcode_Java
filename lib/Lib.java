@@ -13,20 +13,6 @@ public class Lib {
 			swap(nums, index, i);
 		}
 	}
-	
-	public static void mergeSort(int[] nums, int low, int high) { // low: inclusive; high: exclusive
-		if (high - low <= 1) return;
-		int mid = (low + high) / 2;
-		mergeSort(nums, low, mid);
-		mergeSort(nums, mid, high);
-		int[] cahce = new int[high - low];
-		int left = low, right = mid, ind = 0;
-		while (left < mid) {
-			while (right < high && nums[right] < nums[left]) cahce[ind++] = nums[right++];
-			cahce[ind++] = nums[left++];
-		}
-		System.arraycopy(cahce, 0, nums, low, right - low);
-	}
 
 	public static void swap(int[] nums, int i, int j) {
 		if (nums[i] != nums[j]) {
