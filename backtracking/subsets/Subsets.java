@@ -23,7 +23,7 @@ public class Subsets {
     public List<List<Integer>> subsets(int[] nums) {
         LEN = nums.length;
         List<List<Integer>> res = new ArrayList<>();
-        dfs(nums, 0, new ArrayList<>(LEN), res);
+        dfs(nums, 0, new ArrayList<Integer>(LEN), res);
         return res;
     }
     

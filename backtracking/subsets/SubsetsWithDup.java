@@ -27,7 +27,7 @@ public class SubsetsWithDup {
 		LEN = nums.length;
 		List<List<Integer>> res = new ArrayList<>();
 		Arrays.sort(nums);
-		dfs(nums, 0, new ArrayList<>(LEN), res);
+		dfs(nums, 0, new ArrayList<Integer>(LEN), res);
 		return res;
 	}
 
