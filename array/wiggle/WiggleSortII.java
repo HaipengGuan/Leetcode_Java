@@ -1,7 +1,6 @@
 package array.wiggle;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * 324. Wiggle Sort II
