@@ -53,10 +53,11 @@ class DoublePush extends MinStack {
 
 // ------------------------------
 // push the gap of current value and min
+// best approach
 class PushGap extends MinStack {
 	
 	private Stack<Long> stack = new Stack<>();
-	private int min = Integer.MAX_VALUE;
+	private long min = Integer.MAX_VALUE;
 	
 	@Override
 	public void push(int x) {
@@ -78,12 +79,57 @@ class PushGap extends MinStack {
 	@Override
 	public int top() {
 		long top = stack.peek();
-		return (top > 0) ? (int)(top + min) : min;
+		return (top > 0) ? (int)(top + min) : (int)min;
 	}
 
 	@Override
 	public int getMin() {
-		return min;
+		return (int)min;
+	}
+	
+}
+
+//------------------------------
+// simulate re-ensure capacity process
+class NoCollection extends MinStack {
+	
+	private long[] stack = new long[100];
+	private int capacity = 100;
+	private int length = 0;
+	private long min = Integer.MAX_VALUE;
+	
+	@Override
+	public void push(int x) {
+		if (length + 1 > capacity) {
+			long[] stack2 = new long[2*capacity];
+			System.arraycopy(stack, 0, stack2, 0, length);
+			capacity *= 2;
+			stack = stack2;
+		}
+		if (length == 0) {
+			stack[length++] = 0L;
+			min = x;
+		} else {
+			stack[length++] = (long)(x - min);
+			if (x < min) min = x;
+		}
+	}
+
+	@Override
+	public void pop() {
+		long top = stack[--length];
+		if (top < 0) min -= top;
+	}
+
+	@Override
+	public int top() {
+		long top = stack[length-1];
+		return (top > 0) ? (int)(top + min) : (int)min;
+	}
+
+	@Override
+	public int getMin() {
+		return (int)min;
 	}
 	
 }
