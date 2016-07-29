@@ -1,4 +1,4 @@
-package problems;
+package problems.sub_window;
 
 /**
  * 76. Minimum Window Substring

@@ -1,4 +1,4 @@
-package problems;
+package problems.sub_window;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;

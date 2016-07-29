@@ -1,4 +1,4 @@
-package array;
+package problems.sub_window;
 
 /**
  * 209. Minimum Size Subarray Sum
