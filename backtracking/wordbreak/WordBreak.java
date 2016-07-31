@@ -27,9 +27,10 @@ public class WordBreak {
     	if (s.length() == 0 || wordDict.size() == 0) return false;
     	int n = s.length();
     	boolean[] dp = new boolean[n+1];
+    	int maxLen = getMaxLen(wordDict);
     	dp[0] = true;
     	for (int i = 1; i <= n; i++) {
-			for (int j = i-1; j >= 0; j--) {
+			for (int j = i-1; j >= 0 && j >= i - maxLen; j--) {
 				if (dp[j] && wordDict.contains(s.substring(j, i))) {
 					dp[i] = true;
 					break;
@@ -39,6 +40,13 @@ public class WordBreak {
     	return dp[n];
     }
     
+    private int getMaxLen(Set<String> wordDict) {
+		int max = 0;
+		for (String string : wordDict) {
+			max = Math.max(max, string.length());
+		}
+		return max;
+	}
     
     // ------------------------
 	private static HashSet<String> set = new HashSet<>();

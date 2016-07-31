@@ -29,13 +29,13 @@ public class WordBreakII {
     public List<String> wordBreak(String s, Set<String> wordDict) {
     	List<String> res = new ArrayList<>();
     	if (s.length() == 0 || wordDict.size() == 0) return res;
-    	int n = s.length();
+    	int n = s.length(), maxLen = getMaxLen(wordDict);
     	boolean[] possible = new boolean[n+1];
     	boolean[][] dp = new boolean[n][n];
     	int[] lastInds = new int[n];
     	possible[0] = true;
     	for (int end = 1; end <= n; end++) {
-			for (int begin = 0; begin < end; begin++) {
+			for (int begin = end-1; begin >= 0 && begin >= end-maxLen; begin--) {
 				if (possible[begin] && wordDict.contains(s.substring(begin, end))){
 					possible[end] = true;
 					dp[begin][end-1] = true;
@@ -48,6 +48,15 @@ public class WordBreakII {
     	return res;
 	}
 	
+    private int getMaxLen(Set<String> wordDict) {
+		int max = 0;
+		for (String string : wordDict) {
+			max = Math.max(max, string.length());
+		}
+		return max;
+	}
+    
+    
 	private void dfs(String s, int begin, boolean[][] dp, int[] lastInds, List<String> res, String cur) {
 		if (begin >= s.length()) {
 			res.add(cur.substring(0, cur.length()-1));
