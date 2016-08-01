@@ -1,9 +1,8 @@
 package problems.parentheses;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 301. Remove Invalid Parentheses
@@ -23,43 +22,55 @@ import java.util.Set;
  */
 public class RemoveInvalidParentheses {
 	
+	private static int LEN = 0;
+	
+	/**
+	 * Reference: https://discuss.leetcode.com/topic/30743/easiest-9ms-java-solution
+	 * Reference: https://discuss.leetcode.com/topic/28859/java-optimized-dfs-solution-3-ms
+	 */
 	public List<String> removeInvalidParentheses(String s) {
-		Set<String> res = new HashSet<>();
+		List<String> res = new ArrayList<>();
 		int removeLeft = 0, removeRight = 0;
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
+		LEN = s.length();
+		char[] charArray = s.toCharArray();
+		for (char c : charArray) {
 			if (c == '(') {
 				removeLeft++;
 			} else if (c == ')') {
-				if (removeLeft > 0) removeLeft--;
+				if (removeLeft > 0 ) removeLeft--;
 				else removeRight++;
 			}
 		}
-		dfs(s, 0, removeLeft, removeRight, 0, new StringBuffer(), res);
-		return new ArrayList<>(res);
-	}
-	
-	private void dfs(String s, int pos, int left, int right, int open, StringBuffer cur, Set<String> res) {
-		if (pos >= s.length() && left == 0 && right == 0 && open == 0) {
-			res.add(new String(cur));
-		} else if (pos >= s.length() || left < 0 || right < 0 || open < 0) {
-			return;
+		if (removeLeft == 0 && removeRight == 0) {
+			return Arrays.asList(s);
 		} else {
-			char c = s.charAt(pos);
-			int len = cur.length();
-			if (c == '(') {
-				dfs(s, pos+1, left-1, right, open, cur, res);
-				dfs(s, pos+1, left, right, open+1, cur.append(c), res);
-			} else if (c == ')') {
-				dfs(s, pos+1, left, right-1, open, cur, res);
-				dfs(s, pos+1, left, right, open-1, cur.append(c), res);
-			} else {
-				dfs(s, pos+1, left, right, open, cur.append(c), res);
-			}
-			cur.deleteCharAt(len);
+			dfs(charArray, 0, removeLeft, removeRight, 0, new StringBuffer(), res);
+			return res;
 		}
 	}
-
+	
+	private void dfs(char[] s, int pos, int left, int right, int open, StringBuffer cur, List<String> res) {
+		if (pos >= LEN) {
+			if (left == 0 && right == 0 && open == 0) {
+				res.add(cur.toString());
+			}
+		} else {
+			char c = s[pos];
+			int len = cur.length(), i = 1;
+			if (c != '(' && c != ')') {
+				dfs(s, pos+1, left, right, open, cur.append(c), res);
+			} else if (c == '(') {
+				while (pos + i < LEN && s[pos + i] == c) i++; // merge duplicate
+				if (left > 0) dfs(s, pos + 1, left - 1, right, open, cur, res);
+				dfs(s, pos + i, left, right, open + i, cur.append(s, pos, i), res);
+			} else if (c == ')') {
+				while (pos + i < LEN && s[pos + i] == c) i++; // merge duplicate
+				if (right > 0) dfs(s, pos + 1, left, right - 1, open, cur, res);
+				if (open - i >= 0) dfs(s, pos+i, left, right, open - i, cur.append(s, pos, i), res);
+			}
+			cur.setLength(len);
+		}
+	}
     
     // ---------------------------
 	private static final RemoveInvalidParentheses remove = new RemoveInvalidParentheses();
@@ -94,4 +105,5 @@ public class RemoveInvalidParentheses {
 		test("a)b)c)d)()()(a)()()b(c(d(e");
 		test("()())()");
 	}
+	
 }
