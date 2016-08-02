@@ -96,7 +96,7 @@ class ExtraSpace extends PermutationsII {
 		int n = nums.length;
     	List<List<Integer>> res = new ArrayList<>();
     	Arrays.sort(nums);
-    	dfs(nums, new boolean[n], new ArrayList<>(n), res);
+    	dfs(nums, new boolean[n], new ArrayList<Integer>(n), res);
     	return res;
 	}
 	
