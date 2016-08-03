@@ -1,4 +1,4 @@
-package string.matching;
+package dynamic_programming.matching;
 
 /**
  * 10. Regular Expression Matching

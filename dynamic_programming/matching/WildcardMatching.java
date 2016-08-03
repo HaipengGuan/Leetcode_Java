@@ -1,4 +1,4 @@
-package string.matching;
+package dynamic_programming.matching;
 
 /**
  * 44. Wildcard Matching
