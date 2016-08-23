@@ -55,18 +55,17 @@ public class NoRepeatingSubstring {
 class ImprovedMapSolution extends NoRepeatingSubstring {
 
 	public int lengthOfLongestSubstring(String s) {
-    	int n = s.length();
+        int n = s.length();
     	if (n == 0) return 0;
-    	int[] map = new int[256];
-    	Arrays.fill(map, -1);
+    	int[] map = new int[128];
     	int max = 1, start = 0;
     	for (int i = 0; i < n; i++) {
     		char c = s.charAt(i);
-			if (map[c] >= start) {
+			if (map[c] - 1 >= start) {
 				max = Math.max(max, i - start);
-				start = map[c] + 1;
+				start = map[c];
 			}
-			map[c] = i;
+			map[c] = i + 1;
 		}
     	return Math.max(max, n - start);
 	}
